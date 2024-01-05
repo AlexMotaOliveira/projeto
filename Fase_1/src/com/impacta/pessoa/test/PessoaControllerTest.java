@@ -40,5 +40,7 @@ public class PessoaControllerTest {
         Pessoa pessoaEntity = pessoaController.buscarPessoa(1);
         Assertions.assertNotNull(pessoaEntity);
         Assertions.assertEquals(1, pessoaEntity.getId());
+        System.out.println(pessoaEntity);
+
     }
 }
