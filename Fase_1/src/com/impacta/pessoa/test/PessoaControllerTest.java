@@ -5,6 +5,8 @@ import com.impacta.pessoa.entity.Pessoa;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 
 public class PessoaControllerTest {
 
@@ -14,12 +16,13 @@ public class PessoaControllerTest {
 //        Assertions.assertNotNull(pessoaController);
 
         Pessoa pessoa = new Pessoa();
-        pessoa.setNome("Alex Mota");
-        pessoa.setCpf("12345678912");
+        pessoa.setNome("Jose Silva");
+        pessoa.setCpf("8541254789");
 
         Pessoa pessoaEntity = pessoaController.cadastrar(pessoa);
 
         Assertions.assertNotNull(pessoaEntity);
+        System.out.println(pessoaEntity);
     }
 
     @Test
@@ -35,7 +38,7 @@ public class PessoaControllerTest {
     }
 
     @Test
-    void buscarPessoa(){
+    void buscarPessoaPorId(){
         PessoaController pessoaController = new PessoaController();
         Pessoa pessoaEntity = pessoaController.buscarPessoa(1);
         Assertions.assertNotNull(pessoaEntity);
@@ -43,4 +46,36 @@ public class PessoaControllerTest {
         System.out.println(pessoaEntity);
 
     }
+
+    @Test
+    void buscarPessoaPorCpf(){
+        String cpf = "12345678936";
+        PessoaController pessoaController = new PessoaController();
+        Pessoa pessoaEntity = pessoaController.buscarPessoa(cpf);
+        Assertions.assertNotNull(pessoaEntity);
+        Assertions.assertEquals(cpf, pessoaEntity.getCpf());
+        System.out.println(pessoaEntity);
+
+    }
+
+    @Test
+    void buscarTodos(){
+        PessoaController pessoaController = new PessoaController();
+        List<Pessoa> pessoaList = pessoaController.buscarPessoa();
+        Assertions.assertNotNull(pessoaList);
+        Assertions.assertFalse(pessoaList.isEmpty());
+
+        pessoaList.forEach(pessoa -> System.out.println());
+        pessoaList.forEach(Pessoa::imprimir);
+
+    }
+
+    @Test
+    void excluirPessoa() {
+        PessoaController pessoaController = new PessoaController();
+        long result = pessoaController.excluirPessoa(1);
+        Assertions.assertEquals(1, result);
+
+    }
+
 }

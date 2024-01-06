@@ -53,4 +53,8 @@ public class Pessoa {
     public int hashCode() {
         return Objects.hash(getCpf());
     }
+
+    public void imprimir() {
+        System.out.println(toString());
+    }
 }
