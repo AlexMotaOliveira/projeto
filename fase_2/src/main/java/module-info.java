@@ -1,6 +1,7 @@
-module com.impacta.pessoa.fase_2 {
+module com.impacta.pessoa {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.sql;
 
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
