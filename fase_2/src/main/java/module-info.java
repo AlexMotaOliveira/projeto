@@ -8,4 +8,7 @@ module com.impacta.pessoa {
 
     opens com.impacta.pessoa to javafx.fxml;
     exports com.impacta.pessoa;
+
+    exports com.impacta.pessoa.controller;
+    opens com.impacta.pessoa.controller to javafx.fxml;
 }

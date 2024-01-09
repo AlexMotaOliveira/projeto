@@ -12,7 +12,7 @@ public class PessoaRepositoryImpl implements PessoaRepository {
 
     @Override
     public Pessoa save(Pessoa pessoa) {
-        
+
 
         String query = "INSERT INTO pessoa (nome, cpf) VALUES (?, ?);";
 
@@ -27,7 +27,7 @@ public class PessoaRepositoryImpl implements PessoaRepository {
                 if (result > 0) {
                     return findByCpf(pessoa.getCpf());
                 }
-            }else {
+            } else {
                 System.out.println("já existem uma pessoa com o mesmo cpf");
             }
 
@@ -127,6 +127,26 @@ public class PessoaRepositoryImpl implements PessoaRepository {
 
     @Override
     public Pessoa update(Pessoa pessoa) {
+        //todo validar se o cpf já existe no banco
+
+        String query = "UPDATE pessoa SET nome = ?, cpf = ? WHERE id = ?;";
+
+        try (Connection connection = getConnection();
+             PreparedStatement prepareStatement = connection.prepareStatement(query)) {
+
+            prepareStatement.setString(1, pessoa.getNome());
+            prepareStatement.setString(2, pessoa.getCpf());
+            prepareStatement.setLong(3, pessoa.getId());
+
+            long result = prepareStatement.executeUpdate();
+            if (result > 0) {
+                return findById(pessoa.getId());
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 
