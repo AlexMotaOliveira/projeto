@@ -1,5 +1,6 @@
 package com.impacta.pessoa.repository.impl;
 
+import com.impacta.pessoa.config.ConnectionDataBase;
 import com.impacta.pessoa.entity.Pessoa;
 import com.impacta.pessoa.repository.PessoaRepository;
 
@@ -13,22 +14,17 @@ public class PessoaRepositoryImpl implements PessoaRepository {
     @Override
     public Pessoa save(Pessoa pessoa) {
 
-
         String query = "INSERT INTO pessoa (nome, cpf) VALUES (?, ?);";
 
         try (Connection connection = getConnection();
              PreparedStatement prepareStatement = connection.prepareStatement(query)) {
 
-            if (findByCpf(pessoa.getCpf()) == null) {
-                prepareStatement.setString(1, pessoa.getNome());
-                prepareStatement.setString(2, pessoa.getCpf());
+            prepareStatement.setString(1, pessoa.getNome());
+            prepareStatement.setString(2, pessoa.getCpf());
 
-                long result = prepareStatement.executeUpdate();
-                if (result > 0) {
-                    return findByCpf(pessoa.getCpf());
-                }
-            } else {
-                System.out.println("já existem uma pessoa com o mesmo cpf");
+            long result = prepareStatement.executeUpdate();
+            if (result > 0) {
+                return findByCpf(pessoa.getCpf());
             }
 
         } catch (SQLException e) {
@@ -66,10 +62,10 @@ public class PessoaRepositoryImpl implements PessoaRepository {
 
         String query = "SELECT * FROM pessoa where cpf =" + cpf;
 
-        try {
-            Connection connection = getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
             return getPessoa(resultSet);
 
         } catch (SQLException e) {
@@ -83,13 +79,13 @@ public class PessoaRepositoryImpl implements PessoaRepository {
 
         String query = "SELECT * FROM pessoa";
 
-        try {
-            Connection connection = getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-            List<Pessoa> pessoaList = new ArrayList<>();
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
 
+            List<Pessoa> pessoaList = new ArrayList<>();
             Pessoa pessoa;
+
             do {
                 pessoa = getPessoa(resultSet);
                 if (pessoa != null) {
@@ -107,11 +103,10 @@ public class PessoaRepositoryImpl implements PessoaRepository {
     public Long deleteById(long id) {
 
         String query = "DELETE FROM pessoa WHERE id =" + id;
-        try {
-            Connection connection = getConnection();
-            Statement statement = connection.createStatement();
-            long result = statement.executeUpdate(query);
-            return result;
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement()) {
+
+            return (long) statement.executeUpdate(query);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -127,8 +122,6 @@ public class PessoaRepositoryImpl implements PessoaRepository {
 
     @Override
     public Pessoa update(Pessoa pessoa) {
-        //todo validar se o cpf já existe no banco
-
         String query = "UPDATE pessoa SET nome = ?, cpf = ? WHERE id = ?;";
 
         try (Connection connection = getConnection();
@@ -151,11 +144,7 @@ public class PessoaRepositoryImpl implements PessoaRepository {
     }
 
     private Connection getConnection() throws SQLException {
-        String senha = "123456";
-        String usuario = "root";
-        String url = "jdbc:mysql://localhost:3306/impacta?useTimezone=true&serverTimezone=UTC";
-
-        return DriverManager.getConnection(url, usuario, senha);
+        return ConnectionDataBase.getConnection();
     }
 
     private Pessoa getPessoa(ResultSet resultSet) throws SQLException {

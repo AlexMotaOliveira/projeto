@@ -10,26 +10,15 @@ public class PessoaService {
 
     private final PessoaRepositoryImpl pessoaRepository;
 
-    public PessoaService(){
+    public PessoaService() {
         this.pessoaRepository = new PessoaRepositoryImpl();
     }
 
     public Pessoa cadastrar(Pessoa pessoa) {
-        if (pessoa == null || pessoa.getNome() == null || pessoa.getCpf() == null) {
-            throw new PessoaException("Nome/Cpf não pode estar nulo");
-        }
-
-        if (pessoa.getCpf().isEmpty() && pessoa.getNome().isEmpty()) {
-            throw new PessoaException("cpf/nome não pode estar vazio");
-        }
-
-        if (pessoa.getCpf().length() != 11) {
-            throw new PessoaException("cpf não tem 11 digitos");
-        }
-
+        validarDadosDeCadastrar(pessoa);
+        validarCpfExistente(pessoa.getCpf());
         return pessoaRepository.save(pessoa);
     }
-
 
     public Pessoa buscarPessoa(long id) {
         return pessoaRepository.findById(id);
@@ -48,6 +37,31 @@ public class PessoaService {
     }
 
     public Pessoa atualizar(Pessoa pessoa) {
+        validarDadosDeCadastrar(pessoa);
+        validarCpfExistente(pessoa.getCpf());
         return pessoaRepository.update(pessoa);
     }
+
+    private static void validarDadosDeCadastrar(Pessoa pessoa) {
+        if (pessoa == null || pessoa.getNome() == null || pessoa.getCpf() == null) {
+            throw new PessoaException("Nome/Cpf não pode estar nulo");
+        }
+
+        if (pessoa.getCpf().isBlank() || pessoa.getNome().isBlank()) {
+            throw new PessoaException("cpf/nome não pode estar vazio");
+        }
+
+        if (pessoa.getCpf().length() != 11) {
+            throw new PessoaException("cpf não tem 11 digitos");
+        }
+    }
+
+    private void validarCpfExistente(String cpf) {
+        if (buscarPessoa(cpf) == null) {
+        } else {
+            throw new PessoaException("já existem uma pessoa com o mesmo cpf");
+        }
+    }
+
+
 }

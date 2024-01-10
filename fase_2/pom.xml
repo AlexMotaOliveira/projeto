@@ -81,7 +81,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.impacta.pessoa.fase_2/com.impacta.pessoa.HelloApplication</mainClass>
+                            <mainClass>com.impacta.pessoa/com.impacta.pessoa.CadastroApplication</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
